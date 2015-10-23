@@ -1,0 +1,14 @@
+<config>
+  <cloud id="GlobalNOC">
+    <class id="CDS">
+      <version value="1">
+        <service id="Node">
+          <location url="http://localhost:8529/test.cgi" weight="1"></location>
+        </service>
+        <service id="Pop">
+          <location url="http://localhost:8529/test.cgi" weight="1"></location>
+        </service>
+      </version>
+    </class>
+  </cloud>
+</config>

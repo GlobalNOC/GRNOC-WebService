@@ -1,0 +1,8 @@
+#PerlSetupEnv On
+#SetEnv PERL5OPT "-MDevel::Cover=-db,@DocumentRoot@/../../cover_db,-silent,1,-dir,@DocumentRoot@/ -I@DocumentRoot@/../blib/lib/"
+#PerlPassEnv PERL_TEST_HARNESS_DUMP_TAP
+
+<location />
+  AddHandler cgi-script .cgi
+  Options +ExecCGI
+</location>

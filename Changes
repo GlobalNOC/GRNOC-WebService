@@ -1,0 +1,261 @@
+GRNOC::WebService v1.2.8 -- Thu Oct 02 2014
+===========================================
+
+Bug Fixes:
+
+ * ISSUE=9534 make sure inequality parameters enforce positive integer regex
+
+
+GRNOC::WebService v1.2.7 -- Mon Jun 02 2014
+===========================================
+
+Features:
+ * ISSUE=8595 Automatically strip leading and trailing whitespace from non-attachment input
+parameters
+
+Bug Fixes:
+ * ISSUE=8594 Require newer version of GRNOC::WebService::Client to better support
+multiple shared cookie jars in proxy requests.
+ * ISSUE=8590 Fixed issue in proxy with Unicode character handling which was sometimes
+causing a failure in some cases.
+
+
+GRNOC::WebService v1.2.6 -- Tue Jan 21 2014
+===========================================
+
+Features:
+ * ISSUE=7779 Updated RemoteMethod to store cookies for each username it uses separately to avoid cases where it was unable to properly switch usernames on account of cookies.
+
+Bug Fixes:
+ * ISSUE=7721 Fixed bug where JIT methods were not properly clearing / setting dynamic fields in some cases. Expanded unit tests.
+
+
+GRNOC::WebService v1.2.5 -- Fri Nov 15 2013
+===========================================
+
+Features:
+ * ISSUE=7485 PRemoteMethodnow supports file uploading and downloading.
+
+Bugs:
+ * ISSUE=6443 Proxied requests will now properly include the header information from the far end
+service instead of just the headers from the proxy itself.
+
+
+GRNOC::WebService v1.2.4 -- Thu Oct 31 2013
+===========================================
+
+Features:
+
+ * Added GRNOC::WebService::JIT for Just-In-Time addition of parameters.
+ * Migrated add_logic_parameter and other logic_parameter related methods from GRNOC::WebService::Method::CDS to its parent GRNOC::WebService::Method
+ * ISSUE=7297 fix uninitialized value warnings 
+
+GRNOC::WebService v1.2.3 -- Tue Sep 17 2013
+===========================================
+
+Features:
+
+ * ISSUE=7082 CDS-style methods now support an optional 'default_order' parameter which accepts either ASC or DESC (ASC by default)
+ * ISSUE=7151 Added $BOOLEAN regex to verify input parameters that should be 0 or 1 for false or true values, respectively
+
+
+GRNOC::WebService v1.2.2 -- Thu Sep 6 2013
+==========================================
+
+Features:
+
+ * ISSUE=7014 Added more human readable error messages for certain common input patterns. Methods can now also provide their own validation error text to be sent back in an input fails to validate.
+ * ISSUE=6937 Added support for utf-8 encoded input parameters and the ability to specify output charset as utf-8 for non-attachments.
+ * ISSUE=7001 Added $HOSTNAME regex to verify input parameters that should be RFC1123 compliant.
+
+
+GRNOC::WebService v1.2.1 -- Thu Aug 29 2013
+===========================================
+
+Bugs:
+
+* ISSUE=6945 Fixed issue where remote methods were not sending explicit expiration headers causing caching issues in some browsers.
+
+
+GRNOC::WebService v1.2.0 -- Fri Feb 15 2013
+===========================================
+
+Features:
+
+* ISSUE=5108 Added support for setting whether NULL is allowed in web call parameters
+
+
+GRNOC::WebService v1.1.11 -- Mon Oct 29 2012
+============================================
+
+Features:
+
+* ISSUE=4543 Added ability to configure an optional timeout on remote proxy requests.
+
+
+GRNOC::WebService v1.1.10 -- Fri Sep 28 2012
+============================================
+
+Features:
+
+* ISSUE=4310 Added TEXT regex to support comment fields and the support for min/max length
+
+
+GRNOC::WebService v1.1.9 -- Thu Aug 23 2012
+===========================================
+
+Bugs:
+
+* ISSUE=4239 fixed bug with help() destroying input validator callbacks
+
+
+GRNOC::WebService v1.1.8 -- Thu Aug 23 2012
+===========================================
+
+Bugs:
+
+* ISSUE=4168 fixed regex that parses usernames which contain @ characters
+* ISSUE=4187 default offset input parameter for CDS methods to a value 0
+* ISSUE=3923 added a "remote_urn_lookup" method to the remote methods to resolve a URN to URLs for external use
+
+
+GRNOC::WebService v1.1.7 -- Tue Aug 07 2012
+===========================================
+
+Bugs:
+
+* ISSUE=4021 The webservice module will now error out if optional inputs do not match their patterns.
+
+
+GRNOC::WebService v1.1.6 -- Mon Jul 23 2012
+===========================================
+
+Features:
+
+* ISSUE=4056 support for default and input parameter-specific validation callback handlers
+* ISSUE=4030 adding error return codes for failed proxy attempts
+
+Bugs:
+
+* ISSUE=4010 decode any parameter values the remote method gets
+
+
+GRNOC::WebService v1.1.5 -- Mon Apr 02 2012
+===========================================
+Features:
+
+* ISSUE=3635 PROJ=102 Added support for the multipart/form-data MIME type
+
+
+GRNOC::WebService v1.1.4 -- Mon Jan 09 2012
+===========================================
+Features:
+
+* ISSUE=2956 PROJ=102 Added RemoteMethod capability to use per service authentication credentials.
+* ISSUE=2956 PROJ=102 Added RemoteMethod support for basic authentication.
+* ISSUE=2909 PROJ=102 Parameters given with an empty argument will be treated as NULL.
+* ISSUE=2909 PROJ=102 Added support for inequality parameters. (<, <=, >, >=)
+* Changed from Module::Build to Makemaker
+
+GRNOC::WebService v1.1.3 -- Tue Sep 20 2011
+===========================================
+Features:
+
+* ISSUE=2706 PROJ=102 Added MAC address regex export
+
+GRNOC::WebService v1.1.2 -- Mon Sep 12 2011
+===========================================
+Bug Fixes:
+Fixed a bug in the RemoteMethod call where it was an array of variables instead of just 1
+
+GRNOC::WebService v1.1.1 -- Mon Jun 13 2011
+===========================================
+
+Bug Fixes:
+
+* ISSUE=2354 PROJ=102 introduce Module::Build w/ spec file to guarantee JSON version 2 requirements
+
+
+GRNOC::WebService v1.1.0 -- Tue Jun 07 2011
+===========================================
+
+Features:
+
+* ISSUE=2311 PROJ=102 Added the ability for the RemoteMethod.pm to use Services
+* ISSUE=2349 PROJ=102 Changed RemoteMethod to make use of raw_input of webservice client to support multiple MIME types
+
+GRNOC::WebService v1.0.8 -- Thu Apr 14 2011
+===========================================
+
+Bug Fixes:
+
+* ISSUE=2132 PROJ=102 Switched to JSON::XS 2.x
+
+
+GRNOC::WebService v1.0.7 -- Tue Apr 05 2011
+===========================================
+
+Features:
+
+* ISSUE=1914 PROJ=102 Adding support for like & not_like parameters in CDS-style methods
+
+
+GRNOC::WebService v1.0.6 -- Tue Mar 29 2011
+===========================================
+
+Features:
+
+* ISSUE=1948 PROJ=102 Adding support for a streaming flag and streaming web-services
+
+
+GRNOC::WebService v1.0.5 -- Fri Mar 11 2011
+===========================================
+
+Features:
+
+* ISSUE=1934 PROJ=102 use JSON::XS instead of JSON
+
+
+GRNOC::WebService v1.0.4 -- Thu Jan 20 2011
+===========================================
+
+Bug Fixes:
+
+* ISSUE=1747 PROJ=102 fix handling parameters with multiple arguments running under mod_perl
+
+
+GRNOC::WebService v1.0.3 -- Thu Jan 20 2011
+===========================================
+
+Bug Fixes:
+
+* ISSUE=1478 PROJ=102 redoing mod_perl fix after removing it while fixing the unit tests
+
+
+GRNOC::WebService v1.0.2 -- Tue Jan 18 2011
+===========================================
+
+Features:
+
+* ISSUE=1555 PROJ=102 adding additional regexes to Regex.pm
+* ISSUE=1728 PROJ=102 adding support for GRNOC::WebService::Method::CDS
+
+
+GRNOC::WebService v1.0.1 -- Wed Dec 01 2010
+===========================================
+
+Features:
+
+* ISSUE=1339 PROJ=102 Added is_default parameter to Method (defaults to help)
+* ISSUE=1478 PROJ=102 Adding RemoteMethod support
+
+
+GRNOC::WebService v1.0.0 -- Wed Oct 20 2010
+===========================================
+
+Features:
+
+* ISSUE=862 PROJ=102 validate parameters passed to GRNOC::WS::Method
+* ISSUE=1387 PROJ=102 allow multiple default values
+* ISSUE=1298 PROJ=102 adding GRNOC::WebService::Regex
+* Removed Client.pm since its in its own separate module now
