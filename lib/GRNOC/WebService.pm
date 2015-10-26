@@ -1,9 +1,6 @@
 #--------------------------------------------------------------------
-#----- Copyright(C) 2014 The Trustees of Indiana University
+#----- Copyright(C) 2015 The Trustees of Indiana University
 #--------------------------------------------------------------------
-#----- $HeadURL: svn+ssh://svn.grnoc.iu.edu/grnoc/perl-lib/GRNOC-WebService/trunk/lib/GRNOC/WebService.pm $
-#----- $Id: WebService.pm 33348 2014-10-02 15:13:43Z mrmccrac $
-#-----
 #----- object oriented backend web service interface for core data services
 #-----
 #---------------------------------------------------------------------
@@ -85,17 +82,6 @@ You can find documentation for this module with the perldoc command.
 
     perldoc GRNOC::WebService
 
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright(C) 2013 The Trustees of Indiana University, all rights reserved.
-
-This program is for GRNOC internal use only, no redistribution is
-permitted.
-
-
 =cut
 
-
-
-1;                              # End of GRNOC::WebService
+1;
