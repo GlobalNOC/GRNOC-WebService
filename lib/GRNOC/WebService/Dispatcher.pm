@@ -270,16 +270,16 @@ sub handle_request{
     return undef;
   }
 
-  if ($self->{'cgi'}->param('PROXY_original_user')) {
+  if (defined($self->{'cgi'}->param('PROXY_original_user'))) {
 
     $self->{'cgi'}->param('PROXY_original_user') =~ /^([[:print:]]+)$/;
-    my $proxied_user = $1;
+    my $proxied_user = $1 || '';
 
     $self->{'cgi'}->delete('PROXY_original_user');
 
     #--- if we found that this is a request on behalf of another user,
     #--- let's verify that the proxier is one that this dispatcher will allow
-    if ($proxied_user && $ENV{'REMOTE_USER'}) {
+    if (defined($proxied_user) && $ENV{'REMOTE_USER'}) {
       my $proxier = $ENV{'REMOTE_USER'};
 
       #--- if so, do an environment swap so to the end method it's transparent
