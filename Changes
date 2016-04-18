@@ -1,3 +1,9 @@
+GRNOC::WebService v1.2.9 -- Tue Apr 19 2016
+===========================================
+
+Bug Fixes:
+ * ISSUE=231 PROJ=159 Fixed the issue where unauthorized requests may bypass the proxy and gain access to the services when it's misconfigured or non-cosigned protected
+
 GRNOC::WebService v1.2.8 -- Thu Oct 02 2014
 ===========================================
 
