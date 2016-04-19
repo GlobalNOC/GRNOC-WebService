@@ -272,8 +272,10 @@ sub handle_request{
 
   if (defined($self->{'cgi'}->param('PROXY_original_user'))) {
 
-    $self->{'cgi'}->param('PROXY_original_user') =~ /^([[:print:]]+)$/;
-    my $proxied_user = $1 || '';
+    my $proxied_user = '';
+    if ($self->{'cgi'}->param('PROXY_original_user') =~ /^([[:print:]]+)$/) {
+        $proxied_user = $1;
+    }
 
     $self->{'cgi'}->delete('PROXY_original_user');
 
