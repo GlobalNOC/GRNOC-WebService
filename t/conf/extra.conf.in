@@ -2,6 +2,15 @@
 #SetEnv PERL5OPT "-MDevel::Cover=-db,@DocumentRoot@/../../cover_db,-silent,1,-dir,@DocumentRoot@/ -I@DocumentRoot@/../blib/lib/"
 #PerlPassEnv PERL_TEST_HARNESS_DUMP_TAP
 
+<location /protected>
+  AddHandler cgi-script .cgi
+  Options +ExecCGI
+  AuthType Basic
+  AuthName "Protected"
+  AuthUserFile "testpwdfile"
+  Require valid-user
+</location>
+
 <location />
   AddHandler cgi-script .cgi
   Options +ExecCGI

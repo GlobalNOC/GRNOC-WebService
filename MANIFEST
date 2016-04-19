@@ -30,6 +30,8 @@ t/htdocs/test-attach.cgi
 t/htdocs/test-attach2.cgi
 t/htdocs/test.cgi
 t/htdocs/test_ssl.cgi
+t/htdocs/protected/test.cgi
+t/testpwdfile
 t/input_validators.t
 t/multiple.t
 t/null.t
@@ -38,6 +40,7 @@ t/pod-coverage.t
 t/pod.t
 t/ReloadingConfig.t
 t/RemoteRequest.t
+t/EmptyRemoteUser.t
 t/SpecificCredentials.t
 t/Stream.t
 t/UnauthorizedRemoteRequest.t
