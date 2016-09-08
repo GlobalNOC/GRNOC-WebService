@@ -9,6 +9,7 @@ Source0:        GRNOC-WebService-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 BuildRequires:  mod_perl
+BuildRequires:  mod_perl-devel
 BuildRequires:  httpd-devel
 BuildRequires:  perl-HTML-Parser
 BuildRequires:  perl-GRNOC-WebService-Client >= 1.3.1-2
