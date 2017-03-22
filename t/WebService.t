@@ -1,4 +1,4 @@
-use Test::More tests => 30;
+use Test::More tests => 33;
 
 use strict;
 use GRNOC::WebService;
@@ -248,5 +248,27 @@ $struct = JSON::XS::decode_json($input[scalar(@input)-1]);
 
 
 is( $struct->{'text'}, "input text: 777", "automatically trim leading and trailing whitespace" );
+
+close(FH);
+
+###
+
+open(FH, ">", \$output);
+
+$svc = GRNOC::WebService::Dispatcher->new(
+    test_input      => "ourmethod=number_echo&number=666&foobar=baz",
+    method_selector => "ourmethod",
+    output_handle   => \*FH,
+);
+
+$res = $svc->register_method($method);
+
+$res2  = $svc->handle_request();
+
+@input = split(/\n/, $output);
+
+$struct = JSON::XS::decode_json($input[scalar(@input)-1]);
+
+ok($struct->{'text'} eq "input text: 666", "JSON output seems correct");
 
 close(FH);

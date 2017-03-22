@@ -72,19 +72,6 @@ Perhaps a little code snippet.
 
 =head1 FUNCTIONS
 
-
-=head2 new()
-
-Object constructor.  There are two optional input parameters, test_input and allowed_proxy_users.
-
-test_input is used to pass a set of test input cgi parameters so we can
-perform unit testing, etc. "foo=bar&baz=666" might be an example input
-
-allowed_proxy_users is an array of usernames that are allowed to perform proxy requests
-
-=cut
-
-
 =head2 help()
 
 returns list of avail methods or if parameter 'method_name' provided, the details about that method
@@ -142,12 +129,34 @@ sub _return_error{
 
 }
 
-
-
-
 =head2 new()
 
-constructor
+I<Required>
+
+I<Optional>
+
+B<debug:> Enables debug log statements if enabled. Defaults to 0.
+
+B<default_input_validators:> Unknown. Defaults to [].
+
+B<allowed_proxy_users:> Array of usernames allowed to perform proxy requests. Defaults to [].
+
+B<max_post_size:> Unknown. Defaults to 0.
+
+B<method_selector:> Sets cgi parameter that will be for routing. Defaults to 'method'.
+
+  # How routes are defined by default
+  webservice.com/api?method=method_name
+  
+  # Same route definition if method_selector is set to 'action'
+  webservice.com/api?action=method_name
+
+B<test_input:> Set of cgi parameters for unit testing. Defaults to undef.
+
+  # Example test_input string
+  foo=bar&baz=666
+
+Creates a new WebService Dispatcher that routes requests by method name.
 
 =cut
 sub new{
@@ -155,10 +164,11 @@ sub new{
   my $class =ref($that) || $that;
 
   my %args = (
-              debug                => 0,
-              allowed_proxy_users  => [],
-              max_post_size        => 0,
+              debug                    => 0,
+              allowed_proxy_users      => [],
+              max_post_size            => 0,
               default_input_validators => [],
+              method_selector          => 'method',
               @_,
              );
 
@@ -240,7 +250,7 @@ sub handle_request{
   }
 
   #--- each service implementation can have several methods
-  if (!defined $self->{'cgi'}->param('method')) {
+  if (!defined $self->{'cgi'}->param($self->{'method_selector'})) {
 
     if (!defined $self->{'default_method'}) {
       $self->_set_error("no method specified");
@@ -248,12 +258,12 @@ sub handle_request{
       return undef;
     }
     else {
-      $self->{'cgi'}->param(-name=>'method',-value=> $self->{'default_method'});
+      $self->{'cgi'}->param(-name=>$self->{'method_selector'},-value=> $self->{'default_method'});
     }
 
   }
 
-  $self->{'cgi'}->param('method') =~ /^(\w+)$/;
+  $self->{'cgi'}->param($self->{'method_selector'}) =~ /^(\w+)$/;
   $method = $1;
 
   #--- check for properly formed method
