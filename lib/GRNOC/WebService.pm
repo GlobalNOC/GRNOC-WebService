@@ -9,7 +9,7 @@ use strict;
 
 package GRNOC::WebService;
 
-our $VERSION = '1.2.9';
+our $VERSION = '1.2.10';
 
 require GRNOC::WebService::Dispatcher;
 require GRNOC::WebService::Method;
