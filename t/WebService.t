@@ -257,7 +257,7 @@ open(FH, ">", \$output);
 
 $svc = GRNOC::WebService::Dispatcher->new(
     test_input      => "ourmethod=number_echo&number=666&foobar=baz",
-    method_selector => "ourmethod",
+    method_selector => ["ourmethod"],
     output_handle   => \*FH,
 );
 
