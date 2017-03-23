@@ -1,3 +1,9 @@
+GRNOC::WebService v1.2.11 -- Thu Mar 23 2017
+============================================
+
+Features:
+ * ISSUE=2239 PROJ=160 Adding optional parameter `method_selector` to Dispatcher constructor for custom routing.
+
 GRNOC::WebService v1.2.10 -- Thu Mar 23 2017
 ============================================
 
