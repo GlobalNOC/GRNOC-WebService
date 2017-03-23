@@ -143,12 +143,18 @@ B<allowed_proxy_users:> Array of usernames allowed to perform proxy requests. De
 
 B<max_post_size:> Unknown. Defaults to 0.
 
-B<method_selector:> Sets cgi parameter that will be for routing. Defaults to 'method'.
+B<method_selector:> An array of strings that will define method
+routing. A client may use any of the included strings to specify the
+method to execute. If a client specifies more than one of these
+strings the first will be used.
 
-  # How routes are defined by default
+  # By default a client will use method to specify that method_name
+  # should be executed.
   webservice.com/api?method=method_name
   
-  # Same route definition if method_selector is set to 'action'
+  # If method_selector is set to ['action'], then the client should
+  # use the action parameter to indicated method_name should be
+  # executed.
   webservice.com/api?action=method_name
 
 B<test_input:> Set of cgi parameters for unit testing. Defaults to undef.
@@ -168,7 +174,7 @@ sub new{
               allowed_proxy_users      => [],
               max_post_size            => 0,
               default_input_validators => [],
-              method_selector          => 'method',
+              method_selector          => ['method'],
               @_,
              );
 
@@ -250,20 +256,33 @@ sub handle_request{
   }
 
   #--- each service implementation can have several methods
-  if (!defined $self->{'cgi'}->param($self->{'method_selector'})) {
+  my $method_name;
+  foreach my $selector (@{$self->{'method_selector'}}) {
+
+    if (defined $self->{'cgi'}->param($selector)) {
+      $method_name = $selector;
+    }
+
+  }
+
+  if (!defined $method_name) {
 
     if (!defined $self->{'default_method'}) {
       $self->_set_error("no method specified");
       $self->_return_error();
       return undef;
-    }
-    else {
-      $self->{'cgi'}->param(-name=>$self->{'method_selector'},-value=> $self->{'default_method'});
+    } else {
+      $method_name = $self->{'method_selector'}[0];
+
+      $self->{'cgi'}->param(
+        -name  => $method_name,
+        -value => $self->{'default_method'}
+      );
     }
 
   }
 
-  $self->{'cgi'}->param($self->{'method_selector'}) =~ /^(\w+)$/;
+  $self->{'cgi'}->param($method_name) =~ /^(\w+)$/;
   $method = $1;
 
   #--- check for properly formed method
