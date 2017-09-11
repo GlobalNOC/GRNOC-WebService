@@ -546,7 +546,7 @@ sub _parse_input_parameters {
     my $validation_error_text           = $self->{'input_params'}{$param}{'validation_error_text'};
 
     my $mime_type = $cgi->content_type;
-    if (lc($mime_type) =~ /multipart\/form-data/) {
+    if (defined $mime_type && lc($mime_type) =~ /multipart\/form-data/) {
       $multipart = 1;
     }
 
