@@ -122,7 +122,7 @@ sub _return_error{
   $error{'error_text'} = $self->get_error();
   $error{'results'} = undef;
 
-  print $fh $cgi->header(-type=>'text/plain', -expires=>'-1d');
+  print $fh $cgi->header(-type=>'application/json', -expires=>'-1d');
 
   #--- would be nice if client could pass a output format param and select between json and xml?
   print $fh  JSON::XS::encode_json(\%error);
