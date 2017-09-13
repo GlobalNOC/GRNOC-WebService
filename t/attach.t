@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Test::More;
+use Test::More tests => 19;
 use strict;
 use GRNOC::WebService;
 use Data::Dumper;
@@ -82,26 +82,28 @@ is($ws_data->{'results'}{'hash'}, '39d52ddc4891e939b656dafae537f9b3', 'multiple 
 # to work about 50% of the time and fail 50% of the time.
 # As this is an edge case both in terms of file upload AND
 # too big files, I feel this is safe to open a new issue on.
-if (`uname -a` =~ /\.el7/){
-    diag("Skipping oversized fileupload tests on el7, see TODO comments");
-    done_testing();
-    exit(0);
+
+
+SKIP: {
+    my ($is_el7) = `uname -a` =~ /\.el7/;
+
+    if ($is_el7){
+	skip("Skipping oversized fileupload tests on el7, see TODO comments", 3);
+    }
+
+    $res = $ua->request(POST 'http://localhost:8529/test-attach2.cgi',
+			Content_Type => 'form-data',
+			Content      => [
+			    method => 'mp_test1',
+			    file   => [ 't/data/grnoc-logo.png', 'grnoc-logo.png' ]
+			],
+	);
+    
+    ok($res->is_success, 'form data with a file that is too large was posted to the web service');
+    
+    my $ws_err = from_json($res->content);
+    is($ws_err->{'error'}, 1, 'the web service did not accept a file that is too large');
+    
+    my $err_text = $ws_err->{'error_text'};
+    ok($err_text =~ /^413/, 'the web service returned a CGI error with HTTP status code 413');
 }
-
-$res = $ua->request(POST 'http://localhost:8529/test-attach2.cgi',
-    Content_Type => 'form-data',
-    Content      => [
-        method => 'mp_test1',
-        file   => [ 't/data/grnoc-logo.png', 'grnoc-logo.png' ]
-    ],
-);
-
-ok($res->is_success, 'form data with a file that is too large was posted to the web service');
-
-my $ws_err = from_json($res->content);
-is($ws_err->{'error'}, 1, 'the web service did not accept a file that is too large');
-
-my $err_text = $ws_err->{'error_text'};
-ok($err_text =~ /^413/, 'the web service returned a CGI error with HTTP status code 413');
-
-done_testing();
