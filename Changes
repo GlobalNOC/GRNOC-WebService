@@ -1,3 +1,11 @@
+GRNOC::WebService v1.2.12 -- Tue Sep 12 2017
+============================================
+
+Bug Fixes:
+ * ISSUE=3222 PROJ=160 Fixed warnings generated under EL7 and perl 5.16
+ * GIT=1 Header will now properly state application/json when returning errors instead of text/plain
+
+
 GRNOC::WebService v1.2.11 -- Thu Mar 23 2017
 ============================================
 
