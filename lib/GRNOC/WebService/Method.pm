@@ -100,8 +100,8 @@ A callback might look like this:
                 return undef;
         }
 
-        if ($num >=1024 && $num >=950) {
-            $m_ref->set_error("Warning: Approaching max value of 1024.");
+        if ($num <= 1024 && $num >= 1000) {
+            $m_ref->set_warning("Warning: Approaching max value of 1024.");
         }
 
         $results{'text'} = "input number: $num";
@@ -1390,7 +1390,7 @@ sub _return_error{
   $error{'error_text'}  = $self->get_error();
   $error{'results'}   = undef;
 
-  print $fh $cgi->header(-type=>'text/plain', -expires=>'-1d');
+  print $fh $cgi->header(-type=>'application/json', -expires=>'-1d');
 
   #--- would be nice if client could pass a output format param and select between json and xml?
   print $fh  JSON::XS::encode_json(\%error);
