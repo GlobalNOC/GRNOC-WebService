@@ -78,6 +78,10 @@ Callbacks are passed a reference to the method object and a reference to an inpu
 When an error occurs, the callback should use the Method->set_error() method to document the
 error condition and then return undefined.
 
+If conditions occur in which setting an error is too much, but an issue needs to be reported to the user,
+the callback should use the Method->set_warning() method to document the warning condition.  However, as long
+as an error does not appear, the callback should still return results (if any)
+
 The second argument to a callback is reference to the untainted parameter hash, if the input parameter
 is named "number"  then $params->{'number'}{'value'} will provide the value for that parameter.
 
@@ -94,6 +98,10 @@ A callback might look like this:
         if($num > 1024){
                 $m_ref->set_error(Carp::longmess("number value is > max value 1024"));
                 return undef;
+        }
+
+        if ($num >=1024 && $num >=950) {
+            $m_ref->set_error("Warning: Approaching max value of 1024.");
         }
 
         $results{'text'} = "input number: $num";
@@ -462,6 +470,29 @@ sub help {
   $help{'input_params'} = $input_params;
 
   return \%help;
+}
+
+=head2 get_warning()
+gets the last warning encountered or undef.
+=cut
+
+sub get_warning {
+    my $self = shift;
+    return $self->{'warning'};
+}
+
+
+=head2 set_warning
+method which sets a new error and prints it to stderr
+Can also be used by callback to signal warning to client.
+=cut
+
+sub set_warning {
+  my $self        = shift;
+  my $warning       = shift;
+
+  $self->{'warning'}  = $warning;
+
 }
 
 =head2 get_error()
