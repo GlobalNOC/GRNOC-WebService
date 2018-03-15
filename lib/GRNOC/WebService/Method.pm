@@ -473,7 +473,7 @@ sub help {
 }
 
 =head2 get_warning()
-gets the last warning encountered or undef.
+gets the warnings encountered or undef.
 =cut
 
 sub get_warning {
@@ -483,16 +483,31 @@ sub get_warning {
 
 
 =head2 set_warning
-method which sets a new error and prints it to stderr
-Can also be used by callback to signal warning to client.
+
+taking a warning string as an argument, this goes
+and either sets the warning if it's undefined,
+or 
+
 =cut
 
 sub set_warning {
   my $self        = shift;
   my $warning       = shift;
 
-  $self->{'warning'}  = $warning;
+  return if !$warning;
 
+  if (!$self->{'warning'}) {
+      $self->{'warning'} = [];
+  }
+
+  if (ref($warning) eq 'ARRAY') {
+        push(@{$self->{'warning'}}, @$warning);
+  }
+  else {
+    push (@{$self->{'warning'}}, $warning);
+  }
+
+    return join('\n', @{$self->{'warning'}});
 }
 
 =head2 get_error()
