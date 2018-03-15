@@ -472,42 +472,15 @@ sub help {
   return \%help;
 }
 
-=head2 get_warning()
-gets the warnings encountered or undef.
+=head2 output_warning
+outputs warning to the client.
 =cut
 
-sub get_warning {
-    my $self = shift;
-    return $self->{'warning'};
-}
-
-
-=head2 set_warning
-
-taking a warning string as an argument, this goes
-and either sets the warning if it's undefined,
-or 
-
-=cut
-
-sub set_warning {
+sub output_warning {
   my $self        = shift;
   my $warning       = shift;
 
-  return if !$warning;
-
-  if (!$self->{'warning'}) {
-      $self->{'warning'} = [];
-  }
-
-  if (ref($warning) eq 'ARRAY') {
-        push(@{$self->{'warning'}}, @$warning);
-  }
-  else {
-    push (@{$self->{'warning'}}, $warning);
-  }
-
-    return join('\n', @{$self->{'warning'}});
+  return $warning;
 }
 
 =head2 get_error()
