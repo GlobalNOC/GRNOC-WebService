@@ -365,7 +365,7 @@ sub add_input_parameter{
 	  $error_text = "Parameter $name only accepts valid RFC1123 host/domain names.";
       }
       else {
-          $error_text = "CGI input parameter $name does not match pattern /$pattern/ ";
+          $error_text = "CGI input parameter $name does not match pattern";
       }
 
       $args{'validation_error_text'} = $error_text;
