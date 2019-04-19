@@ -459,6 +459,7 @@ sub help {
 
   foreach my $input_param_name ( @input_param_names ) {
 
+    delete ( $input_params->{$input_param_name}{'pattern'} );
     my $input_validators = $input_params->{$input_param_name}{'input_validators'};
 
     foreach my $input_validator ( @$input_validators ) {
