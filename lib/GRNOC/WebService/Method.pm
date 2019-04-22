@@ -20,7 +20,7 @@ use CGI;
 use JSON::XS;
 use Clone;
 use Encode;
-
+use GRNOC::Config;
 
 
 package GRNOC::WebService::Method;
@@ -175,6 +175,7 @@ sub new{
                               'debug' => 1,
                               'streaming' => 1,
                               'xdr_regexp' => 1,
+                              'config_file' => 1,
                              );
 
   #--- overide the defaults
@@ -189,6 +190,7 @@ sub new{
               debug                   => 0,
               streaming               => 0,
               xdr_regexp => 'grnoc.iu.edu$',
+              config_file => '/etc/grnoc/webservice/config.xml',
               @_,
              );
 
@@ -441,6 +443,12 @@ sub help {
   $help{'expires'}  = $self->{'expires'};
   $help{'output_type'}  = $self->{'output_type'};
 
+  #read config 
+  my $config_file = $self->{'config_file'};
+  my $config = GRNOC::Config->new(config_file => $config_file);
+
+  my $pattern_introspection = $config->get("/config/enable_pattern_introspection");
+
   # delete all the default input validator callbacks from the help output
   my $default_input_validators = Clone::clone( $self->{'dispatcher'}{'default_input_validators'} );
 
@@ -459,7 +467,13 @@ sub help {
 
   foreach my $input_param_name ( @input_param_names ) {
 
-    delete ( $input_params->{$input_param_name}{'pattern'} );
+    #remove pattern
+    foreach my $pattern_introspect (@$pattern_introspection) {
+        if($pattern_introspect->{'value'} eq "0"){
+	    delete ( $input_params->{$input_param_name}{'pattern'} );
+	}
+    }
+
     my $input_validators = $input_params->{$input_param_name}{'input_validators'};
 
     foreach my $input_validator ( @$input_validators ) {
