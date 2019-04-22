@@ -176,6 +176,7 @@ sub new{
                               'streaming' => 1,
                               'xdr_regexp' => 1,
                               'config_file' => 1,
+                              'enable_pattern_introspection' => 1,
                              );
 
   #--- overide the defaults
@@ -191,6 +192,7 @@ sub new{
               streaming               => 0,
               xdr_regexp => 'grnoc.iu.edu$',
               config_file => '/etc/grnoc/webservice/config.xml',
+              enable_pattern_introspection => 1,
               @_,
              );
 
@@ -220,6 +222,12 @@ sub new{
     Carp::confess("need to define a proper callback");
     return;
   }
+
+  #read config file and set enable_pattern_introspection
+  my $config_file = $self->{'config_file'};
+  my $config = GRNOC::Config->new(config_file => $config_file);
+  my $pattern_introspection = $config->get("/config/enable_pattern_introspection");
+  $args{enable_pattern_introspection} = $pattern_introspection->[0] if(defined($pattern_introspection) and defined($pattern_introspection->[0]));
 
   return $self;
 
@@ -367,7 +375,12 @@ sub add_input_parameter{
 	  $error_text = "Parameter $name only accepts valid RFC1123 host/domain names.";
       }
       else {
-          $error_text = "CGI input parameter $name does not match pattern";
+          if($self->{'enable_pattern_introspection'} == 1){
+              $error_text = "CGI input parameter $name does not match pattern /$pattern/";
+          }
+          else{
+              $error_text = "CGI input parameter $name does not match pattern";
+          }
       }
 
       $args{'validation_error_text'} = $error_text;
@@ -443,12 +456,6 @@ sub help {
   $help{'expires'}  = $self->{'expires'};
   $help{'output_type'}  = $self->{'output_type'};
 
-  #read config 
-  my $config_file = $self->{'config_file'};
-  my $config = GRNOC::Config->new(config_file => $config_file);
-
-  my $pattern_introspection = $config->get("/config/enable_pattern_introspection");
-
   # delete all the default input validator callbacks from the help output
   my $default_input_validators = Clone::clone( $self->{'dispatcher'}{'default_input_validators'} );
 
@@ -467,12 +474,9 @@ sub help {
 
   foreach my $input_param_name ( @input_param_names ) {
 
-    #remove pattern
-    foreach my $pattern_introspect (@$pattern_introspection) {
-        if($pattern_introspect->{'value'} eq "0"){
-	    delete ( $input_params->{$input_param_name}{'pattern'} );
-	}
-    }
+    if($self->{'enable_pattern_introspection'} == 0){
+        delete ( $input_params->{$input_param_name}{'pattern'} );
+    }    
 
     my $input_validators = $input_params->{$input_param_name}{'input_validators'};
 
