@@ -1,3 +1,8 @@
+GRNOC::WebService v1.2.13 -- Tue Apr 23 2019
+============================================
+Features:
+ * TASK=SCTASK0029060 Added the ability to optionally redact validation patterns from being included in the error text and help method output.
+
 GRNOC::WebService v1.2.12 -- Tue Sep 12 2017
 ============================================
 
