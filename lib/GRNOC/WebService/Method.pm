@@ -196,6 +196,7 @@ sub new{
               @_,
              );
 
+
   my $self = \%args;
 
   bless $self,$class;
@@ -222,12 +223,15 @@ sub new{
     Carp::confess("need to define a proper callback");
     return;
   }
-
+  
   #read config file and set enable_pattern_introspection
   my $config_file = $self->{'config_file'};
-  my $config = GRNOC::Config->new(config_file => $config_file);
-  my $pattern_introspection = $config->get("/config/enable_pattern_introspection");
-  $args{enable_pattern_introspection} = $pattern_introspection->[0] if(defined($pattern_introspection) and defined($pattern_introspection->[0]));
+  if(-e $config_file){
+      my $config = GRNOC::Config->new(config_file => $config_file);
+      my $pattern_introspection = $config->get("/config/enable_pattern_introspection");
+
+      $self->{enable_pattern_introspection} = $pattern_introspection->[0] if(defined($pattern_introspection) and defined($pattern_introspection->[0]));
+  }
 
   return $self;
 

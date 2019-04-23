@@ -4,6 +4,7 @@ use strict;
 use GRNOC::WebService;
 use JSON::XS;
 use Data::Dumper;
+use FindBin;;
 
 my $output;
 
@@ -23,7 +24,7 @@ my $method2 = GRNOC::WebService::Method->new(
                                                 name            => "number_echo2",
                                                 description     => "descr",
                                                 callback        => \&number_echo,
-                                                config_file     => "../t/conf/pattern_conf1.xml"
+                                                config_file     => "$FindBin::Bin/conf/pattern_conf1.xml"
                                                 );
 $method2->add_input_parameter(
                                 name            => 'number',
@@ -65,7 +66,7 @@ my $method1 = GRNOC::WebService::Method->new(
                                                 name            => "number_echo3",
                                                 description     => "descr",
                                                 callback        => \&number_echo,
-                                                config_file     => "../t/conf/pattern_conf0.xml"
+                                                config_file     => "$FindBin::Bin/conf/pattern_conf0.xml"
     );
 $method1->add_input_parameter(
                                 name            => 'number',
@@ -73,8 +74,8 @@ $method1->add_input_parameter(
                                 required        => 1,
                                 description     => "integer input"
                               );;
-my $pattern = '^(tdlss+)$';
-my $svc2 = GRNOC::WebService::Dispatcher->new(
+
+                              my $svc2 = GRNOC::WebService::Dispatcher->new(
                                         test_input      => "method=number_echo3&number=op",
                                         output_handle   => \*FH
                                         );

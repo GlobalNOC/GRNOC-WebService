@@ -101,7 +101,9 @@ sub new{
 				'description' => 1,
 				'name' => 1,
 				'cookie_prefix' => 1,
-	                        'expires' => 1
+                'expires' => 1,
+                'config_file' => 1,
+                'enable_pattern_introspection' => 1
 				);
 			
     #--- overide the defaults
@@ -119,12 +121,23 @@ sub new{
 		allowed_webservices => undef,
 		allowed_webservice_urns => undef,
 		cookie_prefix       => '/tmp/',
-		@_,
+        config_file => '/etc/grnoc/webservice/config.xml',
+        enable_pattern_introspection => 1,
+		@_
 		);
 
     my $self = \%args;
 
     bless $self,$class;
+
+    #read config file and set enable_pattern_introspection
+    my $config_file = $self->{'config_file'};
+    if(-e $config_file){
+        my $config = GRNOC::Config->new(config_file => $config_file);
+        my $pattern_introspection = $config->get("/config/enable_pattern_introspection");
+
+        $self->{enable_pattern_introspection} = $pattern_introspection->[0] if(defined($pattern_introspection) and defined($pattern_introspection->[0]));
+    }
 
     # validate the parameter list
     
