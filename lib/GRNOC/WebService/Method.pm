@@ -20,7 +20,7 @@ use CGI;
 use JSON::XS;
 use Clone;
 use Encode;
-
+use GRNOC::Config;
 
 
 package GRNOC::WebService::Method;
@@ -175,6 +175,8 @@ sub new{
                               'debug' => 1,
                               'streaming' => 1,
                               'xdr_regexp' => 1,
+                              'config_file' => 1,
+                              'enable_pattern_introspection' => 1,
                              );
 
   #--- overide the defaults
@@ -189,8 +191,11 @@ sub new{
               debug                   => 0,
               streaming               => 0,
               xdr_regexp => 'grnoc.iu.edu$',
+              config_file => '/etc/grnoc/webservice/config.xml',
+              enable_pattern_introspection => 1,
               @_,
              );
+
 
   my $self = \%args;
 
@@ -217,6 +222,15 @@ sub new{
   if (!defined $self->{'callback'}) {
     Carp::confess("need to define a proper callback");
     return;
+  }
+  
+  #read config file and set enable_pattern_introspection
+  my $config_file = $self->{'config_file'};
+  if(-e $config_file){
+      my $config = GRNOC::Config->new(config_file => $config_file);
+      my $pattern_introspection = $config->get("/config/enable_pattern_introspection");
+
+      $self->{enable_pattern_introspection} = $pattern_introspection->[0] if(defined($pattern_introspection) and defined($pattern_introspection->[0]));
   }
 
   return $self;
@@ -365,7 +379,12 @@ sub add_input_parameter{
 	  $error_text = "Parameter $name only accepts valid RFC1123 host/domain names.";
       }
       else {
-          $error_text = "CGI input parameter $name does not match pattern /$pattern/ ";
+          if($self->{'enable_pattern_introspection'} == 1){
+              $error_text = "CGI input parameter $name does not match pattern /$pattern/";
+          }
+          else{
+              $error_text = "CGI input parameter $name does not match pattern";
+          }
       }
 
       $args{'validation_error_text'} = $error_text;
@@ -458,6 +477,10 @@ sub help {
   my @input_param_names = keys( %$input_params );
 
   foreach my $input_param_name ( @input_param_names ) {
+
+    if($self->{'enable_pattern_introspection'} == 0){
+        delete ( $input_params->{$input_param_name}{'pattern'} );
+    }    
 
     my $input_validators = $input_params->{$input_param_name}{'input_validators'};
 

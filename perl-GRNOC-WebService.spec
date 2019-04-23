@@ -37,6 +37,11 @@ make
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
+%{__install} -d -p %{buildroot}/etc/grnoc/webservice/
+
+%{__install} conf/config.xml %{buildroot}/etc/grnoc/webservice/config.xml
+
 make pure_install
 
 # clean up buildroot
@@ -66,6 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_mandir}/man3/GRNOC::WebService::Regex.3pm.gz
 %doc %{_mandir}/man3/GRNOC::WebService::Method::CDS.3pm.gz
 %doc %{_mandir}/man3/GRNOC::WebService::Method::JIT.3pm.gz
+%config(noreplace) /etc/grnoc/webservice/config.xml
+%attr(644, root, root) /etc/grnoc/webservice/config.xml
+%dir %attr(755, root, root) /etc/grnoc/webservice/
 
 %changelog
 * Mon Jun 13 2011 mrmccrac 1.1.1-1
