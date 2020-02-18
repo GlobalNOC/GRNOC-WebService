@@ -1375,7 +1375,7 @@ sub _return_results{
     if (! $self->{'streaming'}){
         $answer = $self->{'output_formatter'}($results);
         if (! $explicit_headers){
-            $all_headers->{'content_length'} = length($answer);
+            $all_headers->{'content_length'} = length(encode('UTF-8', $answer));
         }
     }
     
