@@ -1,3 +1,9 @@
+GRNOC::WebService v1.2.14 -- Fri Feb 28 2020
+============================================
+
+Bug Fixes:
+ * SCTASK0045472 Fix the issue where the content length of multi-byte characters may be calculated incorrectly
+
 GRNOC::WebService v1.2.13 -- Tue Apr 23 2019
 ============================================
 Features:
