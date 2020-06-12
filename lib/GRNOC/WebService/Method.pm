@@ -1375,7 +1375,12 @@ sub _return_results{
     if (! $self->{'streaming'}){
         $answer = $self->{'output_formatter'}($results);
         if (! $explicit_headers){
-            $all_headers->{'content_length'} = length(Encode::encode('UTF-8', $answer));
+            if ($all_headers->{'type'} =~ /^(application|text)\//) {
+                $all_headers->{'content_length'} = length(Encode::encode('UTF-8', $answer));
+            }
+            else {
+                $all_headers->{'content_length'} = length($answer);
+            }
         }
     }
     
