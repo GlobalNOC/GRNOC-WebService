@@ -1,3 +1,9 @@
+GRNOC::WebService v1.2.14-2 -- Tue Jun 30 2020
+============================================
+
+Bug Fixes:
+ * SCTASK0045472 Fixed the issue that get_image may not work properly
+
 GRNOC::WebService v1.2.14 -- Fri Feb 28 2020
 ============================================
 
