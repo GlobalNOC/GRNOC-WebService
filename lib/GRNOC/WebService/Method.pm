@@ -21,7 +21,7 @@ use JSON::XS;
 use Clone;
 use Encode;
 use GRNOC::Config;
-
+use bytes;
 
 package GRNOC::WebService::Method;
 
@@ -1376,10 +1376,10 @@ sub _return_results{
         $answer = $self->{'output_formatter'}($results);
         if (! $explicit_headers){
             if ($all_headers->{'type'} =~ /^(application|text)\//) {
-                $all_headers->{'content_length'} = length(Encode::encode('UTF-8', $answer));
+                $all_headers->{'content_length'} = bytes::length(Encode::encode('UTF-8', $answer));
             }
             else {
-                $all_headers->{'content_length'} = length($answer);
+                $all_headers->{'content_length'} = bytes::length($answer);
             }
         }
     }
