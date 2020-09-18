@@ -1,11 +1,6 @@
 #--------------------------------------------------------------------
 #----- Copyright(C) 2013 The Trustees of Indiana University
 #--------------------------------------------------------------------
-#----- $LastChangedBy: mrmccrac $
-#----- $LastChangedRevision: 33346 $
-#----- $LastChangedDate: 2014-10-02 15:01:27 +0000 (Thu, 02 Oct 2014) $
-#----- $HeadURL: svn+ssh://svn.grnoc.iu.edu/grnoc/perl-lib/GRNOC-WebService/trunk/lib/GRNOC/WebService/Method.pm $
-#----- $Id: Method.pm 33346 2014-10-02 15:01:27Z mrmccrac $
 #-----
 #----- object oriented backend web service interface for core data services
 #-----
