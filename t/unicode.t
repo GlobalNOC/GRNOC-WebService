@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;
+use Test::More tests => 2;
 use GRNOC::WebService;
 use JSON::XS;
 use URI::Escape qw(uri_escape_utf8) ;
@@ -32,6 +32,7 @@ my $method = GRNOC::WebService::Method->new( name => "string_echo",
 
 $method->add_input_parameter( name => 'string',
 			      pattern => '^([[:print:][:space:]]+)$',
+			      #pattern => '^(.*)$',
 			      required => 1,
 			      description => "string input" );
 
@@ -42,6 +43,18 @@ $svc->register_method( $method );
 $svc->handle_request();
 
 my @input = split(/\n/, $output);
+
+my $length;
+
+foreach my $line (@input){
+    if($line =~ /Content-length: (\d+)/){
+	$length = $1;
+    }
+}
+
+my $content_length = length ($input[ scalar(@input) - 1 ]);
+
+ok($content_length == $length, "Length matches content length");
 
 my $struct = JSON::XS::decode_json( $input[ scalar(@input) - 1 ] );
 

@@ -1,11 +1,6 @@
 #--------------------------------------------------------------------
 #----- Copyright(C) 2013 The Trustees of Indiana University
 #--------------------------------------------------------------------
-#----- $LastChangedBy: mrmccrac $
-#----- $LastChangedRevision: 33346 $
-#----- $LastChangedDate: 2014-10-02 15:01:27 +0000 (Thu, 02 Oct 2014) $
-#----- $HeadURL: svn+ssh://svn.grnoc.iu.edu/grnoc/perl-lib/GRNOC-WebService/trunk/lib/GRNOC/WebService/Method.pm $
-#----- $Id: Method.pm 33346 2014-10-02 15:01:27Z mrmccrac $
 #-----
 #----- object oriented backend web service interface for core data services
 #-----
@@ -21,7 +16,6 @@ use JSON::XS;
 use Clone;
 use Encode;
 use GRNOC::Config;
-
 
 package GRNOC::WebService::Method;
 
@@ -1376,7 +1370,7 @@ sub _return_results{
         $answer = $self->{'output_formatter'}($results);
         if (! $explicit_headers){
             if ($all_headers->{'type'} =~ /^(application|text)\//) {
-                $all_headers->{'content_length'} = length(Encode::encode('UTF-8', $answer));
+                $all_headers->{'content_length'} = length($answer);
             }
             else {
                 $all_headers->{'content_length'} = length($answer);
