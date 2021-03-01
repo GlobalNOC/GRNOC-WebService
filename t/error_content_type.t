@@ -12,6 +12,7 @@ open(FH, ">", \$output);
 sub number_echo{
         my $mthod_obj = shift;
         my $params    = shift;
+        $method->set_error('error message');
 	return;
 }
 
