@@ -16,8 +16,6 @@ sub number_echo{
 	return;
 }
 
-
-
 #--- try out default
 my $method2 = GRNOC::WebService::Method->new(
                                                 name            => "number_echo2",
