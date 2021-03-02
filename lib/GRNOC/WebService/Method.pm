@@ -1403,7 +1403,7 @@ sub _return_results{
 #----- formats results in JSON then seddts proper cache directive header and off we go
 sub _return_error{
   my $self        = shift;
-  my $cgi   = shift;
+  my $cgi         = shift;
   my $fh          = shift;
 
   my %error;
@@ -1411,6 +1411,22 @@ sub _return_error{
   $error{"error"}   = 1;
   $error{'error_text'}  = $self->get_error();
   $error{'results'}   = undef;
+
+  my $allow_credentials='false';
+  my $allowed_origin= "http://grnoc.iu.edu"; #this fails most of the time
+  my $regexp=$self->{'xdr_regexp'};
+  if ( $cgi->http('ORIGIN') =~ /$regexp/) {
+
+    $allowed_origin=$cgi->http('ORIGIN');
+    if (defined $ENV{'HTTPS'}) {
+      $allow_credentials='true';
+    }
+  }
+  print $cgi->header(-Access_Control_Allow_Origin => $allowed_origin,
+                      -Access_Control_Allow_Headers => 'X-Requested-With',
+                      -Access_Control_Max_Age => 60 , #max-age is the caching of the preflight
+                      -Access_Control_Allow_Credentials => $allow_credentials,
+                    );
 
   print $fh $cgi->header(-type=>'text/plain', -expires=>'-1d');
 
@@ -1429,7 +1445,6 @@ sub _return_error{
 =cut
 
 sub handle_request {
-
   my ( $self, $cgi, $fh, $state, $default_input_validators ) = @_;
 
   my $res = $self->_parse_input_parameters( $cgi, $default_input_validators );
