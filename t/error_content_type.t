@@ -12,7 +12,7 @@ open(FH, ">", \$output);
 sub number_echo{
         my $mthod_obj = shift;
         my $params    = shift;
-        $method->set_error('error message');
+        $mthod_obj->set_error('error message');
 	return;
 }
 
@@ -39,6 +39,6 @@ $svc->handle_request();
 
 my @input = split(/\n/, $output);
 my @content_type = split( /;/, $input[2]);
-ok(@content_type[0] eq "Content-Type: application/json" ,"Success: error response returns JSON");
+ok($content_type[0] eq "Content-Type: application/json" ,"Success: error response returns JSON");
 
 close(FH);
