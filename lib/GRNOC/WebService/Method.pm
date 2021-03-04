@@ -1402,13 +1402,12 @@ sub _return_results{
 
 #----- formats results in JSON then seddts proper cache directive header and off we go
 sub _return_error{
-  my $self        = shift;
-  my $cgi         = shift;
-  my $fh          = shift;
+  my $self  = shift;
+  my $cgi   = shift;
+  my $fh    = shift;
 
   my %error;
-
-  $error{"error"}   = 1;
+  $error{"error"}       = 1;
   $error{'error_text'}  = $self->get_error();
   $error{'results'}   = undef;
 
@@ -1428,7 +1427,7 @@ sub _return_error{
                       -Access_Control_Allow_Credentials => $allow_credentials,
                     );
 
-  print $fh $cgi->header(-type=>'text/plain', -expires=>'-1d');
+  print $fh $cgi->header(-type=>'application/json', -expires=>'-1d');
 
   #--- would be nice if client could pass a output format param and select between json and xml?
   print $fh  JSON::XS::encode_json(\%error);
