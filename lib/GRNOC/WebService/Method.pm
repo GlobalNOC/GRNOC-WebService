@@ -1409,7 +1409,7 @@ sub _return_error{
   my %error;
   $error{"error"}       = 1;
   $error{'error_text'}  = $self->get_error();
-  $error{'results'}   = undef;
+  $error{'results'}     = undef;
 
   my $allow_credentials='false';
   my $allowed_origin= "http://grnoc.iu.edu"; #this fails most of the time
@@ -1421,13 +1421,12 @@ sub _return_error{
       $allow_credentials='true';
     }
   }
-  print $cgi->header(-Access_Control_Allow_Origin => $allowed_origin,
+  print $fh $cgi->header( -Access_Control_Allow_Origin => $allowed_origin,
                       -Access_Control_Allow_Headers => 'X-Requested-With',
                       -Access_Control_Max_Age => 60 , #max-age is the caching of the preflight
                       -Access_Control_Allow_Credentials => $allow_credentials,
+                      -type=>'application/json', -expires=>'-1d'
                     );
-
-  print $fh $cgi->header(-type=>'application/json', -expires=>'-1d');
 
   #--- would be nice if client could pass a output format param and select between json and xml?
   print $fh  JSON::XS::encode_json(\%error);
