@@ -171,22 +171,24 @@ sub new{
                               'xdr_regexp' => 1,
                               'config_file' => 1,
                               'enable_pattern_introspection' => 1,
+                              'method_deprecated' => 1,
                              );
 
   #--- overide the defaults
   my %args = (
-              expires           => "-1d",
-              output_type   => "application/json",
-              output_formatter => sub { JSON::XS->new()->encode( shift ) },
-              name      => undef,
-              callback    => undef,
-              description   => undef,
-              attachment    => undef,
-              debug                   => 0,
-              streaming               => 0,
-              xdr_regexp => 'grnoc.iu.edu$',
-              config_file => '/etc/grnoc/webservice/config.xml',
-              enable_pattern_introspection => 1,
+              expires                       => "-1d",
+              output_type                   => "application/json",
+              output_formatter              => sub { JSON::XS->new()->encode( shift ) },
+              name                          => undef,
+              callback                      => undef,
+              description                   => undef,
+              attachment                    => undef,
+              debug                         => 0,
+              streaming                     => 0,
+              xdr_regexp                    => 'grnoc.iu.edu$',
+              config_file                   => '/etc/grnoc/webservice/config.xml',
+              enable_pattern_introspection  => 1,
+              method_deprecated             => 0,
               @_,
              );
 
@@ -346,7 +348,7 @@ sub add_input_parameter{
           $error_text = "Parameter $name only accepts positive integers and 0.";
       }
       elsif ($pattern eq $GRNOC::WebService::Regex::BOOLEAN) {
-	  $error_text = "Parameter $name only accepts either 0 or 1 for false or true values, respectively.";
+	        $error_text = "Parameter $name only accepts either 0 or 1 for false or true values, respectively.";
       }
       elsif ($pattern eq $GRNOC::WebService::Regex::FLOAT){
           $error_text = "Parameter $name only accepts floating point numbers.";
@@ -370,7 +372,7 @@ sub add_input_parameter{
           $error_text = "Parameter $name only accepts valid MAC addresses using either a : or a - as delimiter.";
       }
       elsif ($pattern eq $GRNOC::WebService::Regex::HOSTNAME){
-	  $error_text = "Parameter $name only accepts valid RFC1123 host/domain names.";
+	        $error_text = "Parameter $name only accepts valid RFC1123 host/domain names.";
       }
       else {
           if($self->{'enable_pattern_introspection'} == 1){
@@ -449,10 +451,12 @@ sub help {
 
   my %help;
 
-  $help{'name'}     = $self->{'name'};
-  $help{'description'}  = $self->{'description'};
-  $help{'expires'}  = $self->{'expires'};
-  $help{'output_type'}  = $self->{'output_type'};
+  $help{'name'}               = $self->{'name'};
+  $help{'description'}        = $self->{'description'};
+  $help{'expires'}            = $self->{'expires'};
+  $help{'output_type'}        = $self->{'output_type'};
+  $help{'method_deprecated'}  = $self->{'method_deprecated'};
+  
 
   # delete all the default input validator callbacks from the help output
   my $default_input_validators = Clone::clone( $self->{'dispatcher'}{'default_input_validators'} );
