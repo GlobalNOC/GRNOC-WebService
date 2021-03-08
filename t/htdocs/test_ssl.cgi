@@ -10,9 +10,9 @@ $ENV{'HTTPS'}=1;
 my $svc = GRNOC::WebService::Dispatcher->new(allowed_proxy_users => ['blah']);
 
 sub method{
-    my $meth_ref = shift;
-    my $p_ref = shift;
-    my $state_ref = shift;
+    my $meth_ref 	= shift;
+    my $p_ref 		= shift;
+    my $state_ref 	= shift;
 
     return {results => {'test' => 123123}};
 }
@@ -27,10 +27,25 @@ my $method = GRNOC::WebService::Method->new(
 
 $svc->register_method($method);
 
+sub get_error_response{
+    my $meth_ref  	= shift;
+    my $p_ref     	= shift;
+    my $state_ref 	= shift;
+	$meth_ref->set_error("this is an error");
+    return ;
+}
+
+my $method = GRNOC::WebService::Method->new(
+					    name         => 'get_error_response',
+					    description  => 'get error response test method',
+					    expires      => '-1d',
+					    output_type  => 'application/json',
+					    callback     => \&get_error_response,
+					    );
+
+$svc->register_method($method);
+
 $svc->handle_request();
-
-
-
 
 sub undef_callback {
     my $method = shift;

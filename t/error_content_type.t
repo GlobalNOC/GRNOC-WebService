@@ -38,7 +38,7 @@ $svc->register_method($method2);
 $svc->handle_request();
 
 my @input = split(/\n/, $output);
-my @content_type = split( /;/, $input[2]);
+my @content_type = split( /;/, $input[6]);
 ok($content_type[0] eq "Content-Type: application/json" ,"Success: error response returns JSON");
 
 close(FH);

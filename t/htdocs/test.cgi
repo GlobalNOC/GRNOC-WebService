@@ -188,5 +188,23 @@ $method->add_input_parameter(name        => "input with space",
 
 $svc->register_method($method);
 
+sub get_error_response{
+    my $meth_ref  = shift;
+    my $p_ref     = shift;
+    my $state_ref = shift;
+	$meth_ref->set_error("this is an error");
+    return ;
+}
+
+my $method = GRNOC::WebService::Method->new(
+					    name         => 'get_error_response',
+					    description  => 'get error response test method',
+					    expires      => '-1d',
+					    output_type  => 'application/json',
+					    callback     => \&get_error_response,
+					    );
+
+$svc->register_method($method);
+
 
 $svc->handle_request();
