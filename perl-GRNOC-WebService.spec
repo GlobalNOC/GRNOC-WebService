@@ -1,5 +1,5 @@
 Name:           perl-GRNOC-WebService
-Version:        1.2.14
+Version:        1.2.15
 Release:        2%{?dist}
 Summary:        GRNOC WebService Library for perl
 License:        CHECK(Distributable)
