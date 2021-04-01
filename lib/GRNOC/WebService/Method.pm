@@ -360,7 +360,7 @@ sub add_input_parameter{
           $error_text = "Parameter $name only accepts numbers.";
       }
       elsif ($pattern eq $GRNOC::WebService::Regex::NAME_ID){
-          $error_text = "Parameter $name only accepts printable characters. This excludes control characters like newlines, carrier return, and others.";
+          $error_text = "Parameter $name only accepts printable characters. This excludes control characters like newlines, carriage return, and others.";
       }
       elsif ($pattern eq $GRNOC::WebService::Regex::TEXT){
           $error_text = "Parameter $name only accepts printable characters and spaces, including newlines. This excludes control characters.";
