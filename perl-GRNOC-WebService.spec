@@ -1,5 +1,8 @@
+%global debug_package %{nil} # Don't generate debug info
+%define perl_lib /opt/grnoc/venv/
+%define specfile_deps %(cat cpanfile | sed -r 's/^requires ([^[:space:]]*)/Requires: perl(\\1)/' | sed 's/["'"'"';]//g')
 Name:           perl-GRNOC-WebService
-Version:        1.2.15
+Version:        1.2.16
 Release:        1%{?dist}
 Summary:        GRNOC WebService Library for perl
 License:        CHECK(Distributable)
@@ -7,21 +10,20 @@ Group:          Development/Libraries
 URL:            http://search.cpan.org/dist/GRNOC-WebService/
 Source0:        GRNOC-WebService-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildArch:      noarch
-BuildRequires:  mod_perl
+%if 0%{?rhel} == 8
+BuildArch: x86_64
+%else
+BuildArch: noarch
+%endif
+Requires: perl >= 5.8.8
+BuildRequires:  perl-GRNOC-WebService-Client >= 1.3.1-2
 BuildRequires:  mod_perl-devel
 BuildRequires:  httpd-devel
-BuildRequires:  perl-HTML-Parser
-BuildRequires:  perl-GRNOC-WebService-Client >= 1.3.1-2
-BuildRequires:  perl-TimeDate
 Requires:       perl-GRNOC-WebService-Client >= 1.3.1-2
-Requires:       perl >= 5.8.8
-Requires:       perl-JSON >= 2.17
-Requires:       perl-JSON-XS >= 2.3
 Requires:       perl-GRNOC-Config >= 1.0.7
-Requires:       perl-URI
-Requires:       perl-Clone
-Requires:       perl-libwww-perl >= 5.833
+%if 0%{?rhel} == 7
+%{specfile_deps}
+%endif
 
 %description
 The WebService collection is a set of perl modules which are used to
@@ -37,6 +39,11 @@ make
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
+%if 0%{rhel} == 8
+%{__install} -d -p %{buildroot}%{perl_lib}%{name}/lib/perl5
+cp -r venv/lib/perl5/* -t %{buildroot}%{perl_lib}%{name}/lib/perl5
+%endif
 
 %{__install} -d -p %{buildroot}/etc/grnoc/webservice/
 
@@ -57,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644, root, root, -)
+%if %{rhel} == 8
+%{perl_lib}/%{name}/lib/perl5/*
+%endif
 %{perl_vendorlib}/GRNOC/WebService.pm 
 %{perl_vendorlib}/GRNOC/WebService/Dispatcher.pm
 %{perl_vendorlib}/GRNOC/WebService/Method.pm
