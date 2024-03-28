@@ -10,10 +10,7 @@ use FindBin;
 
 sub MY::postamble { <<"END"; }
 
-venv:
-	carton install --deployment --path=venv
-
-rpm:  manifest dist
+rpm: dist
 	rpmbuild -ta GRNOC-WebService-\$(VERSION).tar.gz
 
 test_jenkins :
@@ -29,7 +26,7 @@ WriteMakefile(
               PREREQ_PM => {
                            },
               dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-              clean               => { FILES => 'GRNOC-WebService* venv' },
+              clean               => { FILES => 'GRNOC-WebService*' },
              );
 
 my $apxs_loc = '/usr/sbin/apxs';
