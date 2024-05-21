@@ -1,3 +1,9 @@
+GRNOC::WebService v1.2.15-2 -- Tue May 21 2024
+============================================
+
+* SCTASK0240947 Add perl-Clone to Build Requirements.
+* SCTASK0071360 Fix typo.
+
 GRNOC::WebService v1.2.14-2 -- Tue Jun 30 2020
 ============================================
 
