@@ -24,6 +24,8 @@ Requires:       perl-URI
 Requires:       perl-Clone
 Requires:       perl-libwww-perl >= 5.833
 
+Provides: perl(GRNOC::WebService) = %{version}
+
 %description
 The WebService collection is a set of perl modules which are used to
 provide and interact with GRNOC web services using Cosign Authentication
