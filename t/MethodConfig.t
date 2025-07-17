@@ -81,8 +81,8 @@ $method1->add_input_parameter(
                                         );
 $svc2->register_method($method1);
 $svc2->handle_request();
-my @input = split(/\n/, $output);
-my $struct = JSON::XS::decode_json($input[scalar(@input)-1]);
+@input = split(/\n/, $output);
+$struct = JSON::XS::decode_json($input[scalar(@input)-1]);
 ok($struct->{'error_text'} eq "number_echo3: CGI input parameter number does not match pattern" ,"2a - pattern check correct");
 
 
