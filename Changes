@@ -1,3 +1,14 @@
+GRNOC::WebService v1.2.15-3 -- Tue May 21 2024
+============================================
+
+Features:
+* Add ability to hide input parameter from help method.
+
+Improvements:
+* Updated unit tests to use new standards when using apache test framework.
+* Added .gitignore file.
+* Fixed various warning messages. 
+
 GRNOC::WebService v1.2.15-2 -- Tue May 21 2024
 ============================================
 

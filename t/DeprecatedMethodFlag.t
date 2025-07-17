@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use Test::Simple tests=>3;
+use Test::More tests => 3;
 use strict;
 use GRNOC::WebService;
 use JSON::XS;
@@ -40,7 +40,7 @@ $svc->register_method($method1);
 my $res  = $svc->handle_request();
 my @input = split(/\n/, $output);
 my $struct = JSON::XS::decode_json($input[scalar(@input)-1]);
-ok( defined $struct->{'method_deprecated'}, 0);
+is( $struct->{'method_deprecated'}, 0, 'method_deprecated flag is 0');
 close(FH);
 
 #2 --- test method when deprecated is specified as 1 ~ true --------
@@ -68,7 +68,7 @@ $svc->register_method($method2);
 my $res2  = $svc->handle_request();
 @input = split(/\n/, $output);
 $struct = JSON::XS::decode_json($input[scalar(@input)-1]);
-ok( defined $struct->{'method_deprecated'}, 1);
+is( $struct->{'method_deprecated'}, 1, 'method_deprecated flag is 1');
 close(FH);
 
 #3 --- test method when deprecated is specified as 0 ~ false --------
@@ -96,5 +96,5 @@ $svc->register_method($method3);
 my $res3  = $svc->handle_request();
 @input = split(/\n/, $output);
 $struct = JSON::XS::decode_json($input[scalar(@input)-1]);
-ok( defined $struct->{'method_deprecated'}, 0);
+is( $struct->{'method_deprecated'}, 0, 'method_deprecated flag is 0');
 close(FH);

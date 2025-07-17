@@ -476,6 +476,11 @@ sub help {
 
   foreach my $input_param_name ( @input_param_names ) {
 
+    if(defined($input_params->{$input_param_name}{is_hidden}) && $input_params->{$input_param_name}{is_hidden} == 1){
+        delete ( $input_params->{$input_param_name} );
+        next;
+    }
+
     if($self->{'enable_pattern_introspection'} == 0){
         delete ( $input_params->{$input_param_name}{'pattern'} );
     }    
@@ -1333,7 +1338,7 @@ sub _return_results{
     my $allowed_origin= "http://grnoc.iu.edu"; #this fails most of the time
     my $regexp=$self->{'xdr_regexp'};
     
-    if ( defined( $cgi->http('ORIGIN') ) && defined( $regexp ) && $cgi->http('ORIGIN') =~ /$regexp/ ) {
+    if ( defined($regexp) && defined( $cgi->http('ORIGIN') ) && $cgi->http('ORIGIN') =~ /$regexp/ ) {
         $allowed_origin=$cgi->http('ORIGIN');
         if (defined $ENV{'HTTPS'}) {
             $allow_credentials='true';
@@ -1373,7 +1378,7 @@ sub _return_results{
     if (! $self->{'streaming'}){
         $answer = $self->{'output_formatter'}($results);
         if (! $explicit_headers){
-            if ($all_headers->{'type'} =~ /^(application|text)\//) {
+            if (defined($all_headers->{'type'}) && $all_headers->{'type'} =~ /^(application|text)\//) {
                 $all_headers->{'content_length'} = length($answer);
             }
             else {
@@ -1418,7 +1423,7 @@ sub _return_error{
   my $allow_credentials='false';
   my $allowed_origin= "http://grnoc.iu.edu"; #this fails most of the time
   my $regexp=$self->{'xdr_regexp'};
-  if ( $cgi->http('ORIGIN') =~ /$regexp/) {
+  if ( defined($regexp) && defined($cgi->http('ORIGIN')) && $cgi->http('ORIGIN') =~ /$regexp/) {
 
     $allowed_origin=$cgi->http('ORIGIN');
     if (defined $ENV{'HTTPS'}) {

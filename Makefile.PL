@@ -28,13 +28,3 @@ WriteMakefile(
               dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
               clean               => { FILES => 'GRNOC-WebService*' },
              );
-
-my $apxs_loc = '/usr/sbin/apxs';
-if(-e '/usr/bin/apxs'){
-	$apxs_loc = '/usr/bin/apxs';
-}
-push(@ARGV, '-apxs', $apxs_loc);
-push(@ARGV, '-documentroot', "$FindBin::Bin/t/htdocs/");
-
-Apache::TestMM::filter_args();
-Apache::TestRunPerl->generate_script();

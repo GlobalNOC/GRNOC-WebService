@@ -1,0 +1,17 @@
+MYMETA.json
+MYMETA.yml
+Makefile
+Makefile.old
+blib/
+cover_db/
+pm_to_blib
+t/conf/apache_test_config.pm
+t/conf/extra.conf
+t/conf/httpd.conf
+t/conf/modperl_inc.pl
+t/conf/modperl_startup.pl
+t/cookies-blah.txt
+t/cookies-something_else.txt
+t/htdocs/index.html
+t/logs/
+GRNOC-WebService-*.tar.gz

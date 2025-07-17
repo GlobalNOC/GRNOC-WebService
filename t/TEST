@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+
+use FindBin;
+use strict;
+use warnings FATAL => 'all';
+
+BEGIN { eval { require blib && blib->import; } }
+
+$Apache::TestConfig::Argv{'documentroot'} = "$FindBin::Bin/../t/htdocs";
+
+$Apache::TestConfig::Argv{'apxs'} = (-e '/usr/bin/apxs') ? '/usr/bin/apxs' : '/usr/sbin/apxs'; 
+
+$Apache::TestConfig::Argv{'maxclients'} = q|4|;
+
+use lib "$FindBin::Bin/../";
+
+My::TestRunPerl->new->run(@ARGV);
+
+# Extend the Apache::TestRunPerl module to prevent it from enabling mod_shib
+# from being picked up by 
+package My::TestRunPerl;
+use base 'Apache::TestRunPerl';
+use Apache::TestConfig;
+
+sub pre_configure {
+    my $self = shift;
+
+    # Don't load an installed mod_shib
+    Apache::TestConfig::autoconfig_skip_module_add('mod_shib_24.c');
+
+    $self->SUPER::pre_configure();
+}
+
+1;

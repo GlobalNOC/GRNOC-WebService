@@ -1,4 +1,4 @@
-use Test::More tests => 33;
+use Test::More tests => 35;
 
 use strict;
 use GRNOC::WebService;
@@ -41,6 +41,14 @@ $method->add_input_parameter(
                              description  => "integer input",
                              min_length => 2,
                              max_length => 12
+                            );
+
+$method->add_input_parameter(
+                             name   => 'hidden',
+                             pattern  => '^(\d+)$',
+                             required => 0,
+                             is_hidden => 1,
+                             description  => "hidden input",
                             );
 
 $method->add_input_parameter( name        => 'date',
@@ -87,6 +95,7 @@ $svc = GRNOC::WebService::Dispatcher->new(
 $res2 = $svc->register_method($method);
 my $res3  = $svc->handle_request();
 
+
 ok( defined $res3, 'help works');
 
 
@@ -96,7 +105,14 @@ $svc = GRNOC::WebService::Dispatcher->new(
                                          );
 
 $res = $svc->register_method($method);
+
+
 my $res4  = $svc->handle_request();
+
+$struct = JSON::XS::decode_json((split("\n", $output))[-1]);
+
+ok(  defined($struct->{input_params}{number}), 'non hidden input is defined');
+ok( !defined($struct->{input_params}{hidden}), 'hidden input is not defined');
 
 ok( defined $res4, 'help(method_name) works');
 
