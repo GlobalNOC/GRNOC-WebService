@@ -1,3 +1,12 @@
+GRNOC::WebService v1.2.16 -- Wed Jan 28 2026
+============================================
+
+Features:
+* SCTASK0794787 Added regex_param argument to the add_logic_parameter() method, enabling REGEXP-based _regex and _not_regex parameters. This is distinguished from the RLIKE-based _like and _not_like parameters, despite both being synonyms for REGEXP_LIKE, to more clearly indicate API usage for developers and users who consume webservice APIs.
+
+Improvements:
+* Extension and cleanup of CDS.t unit test file
+
 GRNOC::WebService v1.2.15-3 -- Tue May 21 2024
 ============================================
 
