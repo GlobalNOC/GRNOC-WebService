@@ -777,7 +777,6 @@ sub _parse_input_parameters {
 
       }
     }
-
   }
   return 1;
 }
@@ -851,11 +850,18 @@ sub set_headers {
 
 =head2 add_logic_parameter()
 
-Requires the name, pattern, and description arguments, and creates 5 input parameters
-(via calls to add_input_parameter() ).  The four additonal ones are for the '_not', '_like',
-'_not_like', and 'logic' input parameters.  It will support multiple arguments, and it is
-not a required parameter.  If the argument inequality is passed with a true value, it will
-also add the four inequality input parameters for less than, greater than, etc.
+Requires the name, pattern, and description arguments, and creates input parameters
+(via calls to add_input_parameter() ).  The additional ones are for the '_not', '_like',
+'_not_like', '_regex', '_not_regex', and 'logic' input parameters.
+
+The '_not' parameter is created if not_param is true (defaults to true if not specified).
+The '_like' parameter is created if like_param is true (defaults to true if not specified).
+The '_not_like' parameter is created if both like_param and not_param are true.
+The '_regex' parameter is created if regex_param is true (defaults to false if not specified).
+The '_not_regex' parameter is created if both regex_param and not_param are true.
+
+If the inequality argument is passed with a true value, it will also add the four inequality
+input parameters for less than, greater than, etc.
 
 =cut
 
@@ -868,6 +874,7 @@ sub add_logic_parameter {
   my $pattern = $args{'pattern'};
   my $description = $args{'description'};
   my $like_param = $args{'like_param'};
+  my $regex_param = $args{'regex_param'} || 0;
   my $not_param = $args{'not_param'};
   my $inequality_params = $args{'inequality_params'};
 
@@ -906,6 +913,26 @@ sub add_logic_parameter {
                                 required => 0,
                                 multiple => 1,
                                 description => "Uses NOT RLIKE logic on the $name parameter." );
+  }
+
+  # add the corresponding regex argument
+  if (!defined($regex_param) || $regex_param) {
+
+    $self->add_input_parameter( name => $name . '_regex',
+                                pattern => $GRNOC::WebService::Regex::TEXT,
+                                required => 0,
+                                multiple => 1,
+                                description => "Uses REGEXP logic on the $name parameter." );
+  }
+
+  # add the corresponding not_regex argument
+  if ($not_param && $regex_param) {
+
+    $self->add_input_parameter( name => $name . '_not_regex',
+                                pattern => $GRNOC::WebService::Regex::TEXT,
+                                required => 0,
+                                multiple => 1,
+                                description => "Uses NOT REGEXP logic on the $name parameter." );
   }
 
   # add the corresponding inequality arguments
@@ -965,6 +992,8 @@ sub has_logic_parameter {
                 $self->defined_param( $param . "_not" ) ||
                 $self->defined_param( $param . "_like" ) ||
                 $self->defined_param( $param . "_not_like" ) ||
+                $self->defined_param( $param . "_regex" ) ||
+                $self->defined_param( $param . "_not_regex" ) ||
                 $self->defined_param( $param . "_less" ) ||
                 $self->defined_param( $param . "_less_equal" ) ||
                 $self->defined_param( $param . "_greater" ) ||
@@ -1004,6 +1033,8 @@ sub parse_logic_parameter {
                                           $args->{$param . "_not"},
                                           $args->{$param . "_like"},
                                           $args->{$param . "_not_like"},
+                                          $args->{$param . "_regex"},
+                                          $args->{$param . "_not_regex"},
                                           $args->{$param . "_less"},
                                           $args->{$param . "_less_equal"},
                                           $args->{$param . "_greater"},
@@ -1019,6 +1050,8 @@ sub parse_logic_parameter {
                                       $args->{$param . "_not"},
                                       $args->{$param . "_like"},
                                       $args->{$param . "_not_like"},
+                                      $args->{$param . "_regex"},
+                                      $args->{$param . "_not_regex"},
                                       $args->{$param . "_less"},
                                       $args->{$param . "_less_equal"},
                                       $args->{$param . "_greater"},
@@ -1035,7 +1068,7 @@ sub parse_logic_parameter {
 ### HERE BE DRAGONS ###
 sub _parse_logic_parameter_having {
 
-  my ( $main_param, $not_param, $like_param, $not_like_param, $less_param, $less_equal_param, $greater_param, $greater_equal_param, $logic_param, $field, $dbh ) = @_;
+  my ( $main_param, $not_param, $like_param, $not_like_param, $regex_param, $not_regex_param, $less_param, $less_equal_param, $greater_param, $greater_equal_param, $logic_param, $field, $dbh ) = @_;
 
   my $having_sql = "( ";
   my $added_logic_param = 0;
@@ -1138,6 +1171,66 @@ sub _parse_logic_parameter_having {
     }
   }
 
+  if ($regex_param->{'is_set'}) {
+
+    my $vals = $regex_param->{'value'};
+
+    for (my $i = 0; $i < @$vals; $i++) {
+
+      my $param = $dbh->quote(@$vals[$i]);
+
+      if ($i == 0 && !$added_logic_param) {
+
+        $having_sql .= "$field REGEXP $param";
+        $added_logic_param++;
+
+      }
+
+      else {
+
+        $having_sql .= " $logic_param_value $field REGEXP $param";
+      }
+
+    }
+
+  }
+
+  if ($not_regex_param->{'is_set'}) {
+
+    my $vals = $not_regex_param->{'value'};
+
+    my $not_regex_having_sql = "( ( ";
+
+    for (my $i = 0; $i < @$vals; $i++) {
+
+      my $param = $dbh->quote(@$vals[$i]);
+
+      if ($i == 0) {
+
+        $not_regex_having_sql .= "$field NOT REGEXP $param";
+      }
+
+      else {
+
+        $not_regex_having_sql .= " $logic_param_value $field NOT REGEXP $param";
+      }
+
+    }
+
+    $not_regex_having_sql .= " ) OR $field IS NULL";
+
+    if (!$added_logic_param) {
+
+      $having_sql .= " $not_regex_having_sql )";
+    }
+
+    else {
+
+      $having_sql .= " $logic_param_value $not_regex_having_sql )";
+    }
+
+  }
+
   $having_sql .= " )";
 
   return $having_sql;
@@ -1145,7 +1238,7 @@ sub _parse_logic_parameter_having {
 
 sub _parse_logic_parameter {
 
-  my ( $main_param, $not_param, $like_param, $not_like_param, $less_param, $less_equal_param, $greater_param, $greater_equal_param, $logic_param, $field ) = @_;
+  my ( $main_param, $not_param, $like_param, $not_like_param, $regex_param, $not_regex_param, $less_param, $less_equal_param, $greater_param, $greater_equal_param, $logic_param, $field ) = @_;
 
   my $result = [];
   my $logic_param_value = $logic_param->{'value'};
@@ -1254,6 +1347,38 @@ sub _parse_logic_parameter {
 
     # include OR IS NULL if using NOT LIKE
     push(@$result, [-or => [$logic_param => $not_like_param_result], [$field => undef]])
+  }
+
+  # handle regex params
+  if ($regex_param->{'is_set'}) {
+
+    my $vals = $regex_param->{'value'};
+
+    for (my $i = 0; $i < @$vals; $i++) {
+
+      my $arg = @$vals[$i];
+
+      push(@$result, $field => {'-regexp', $arg});
+    }
+
+  }
+
+  # handle not regex params
+  if ($not_regex_param->{'is_set'}) {
+
+    my $vals = $not_regex_param->{'value'};
+
+    my $not_regex_param_result = [];
+
+    for (my $i = 0; $i < @$vals; $i++) {
+
+      my $arg = @$vals[$i];
+
+      push(@$not_regex_param_result, $field => {'-not_regexp', $arg});
+    }
+
+    # include OR IS NULL if using NOT REGEXP
+    push(@$result, [-or => [$logic_param => $not_regex_param_result], [$field => undef]]);
   }
 
   # handle less params
