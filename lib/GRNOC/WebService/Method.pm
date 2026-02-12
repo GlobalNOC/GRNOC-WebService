@@ -622,7 +622,8 @@ sub _parse_input_parameters {
       $multipart = 1;
     }
 
-    my @input_array = $cgi->param($param);
+    my @input_array = $cgi->multi_param($param);
+
     my $input_cnt = scalar @input_array;
 
     if ($input_cnt == 0) {
