@@ -530,6 +530,20 @@ sub _parse_remote_parameters{
     my $original_user               = $ENV{'REMOTE_USER'};
     $to_pass{'PROXY_original_user'} = $original_user;
 
+
+    #--- For certain use cases, it's important to know what identity provider the user originally authenticated with.
+    #--- So we send that information along as well if it's available.
+    #---
+    #--- NOTE: The Shib_Identity_Provider environment variable may be passed with eithr '-' or '_' depending on how apache is configured.
+    #---       So look for either here.
+    my $identity_provider = $ENV{'Shib_Identity_Provider'} //
+                            $ENV{'Shib-Identity-Provider'};
+
+    if( $identity_provider ){
+
+        $to_pass{'PROXY_identity_provider'} = $identity_provider;
+    }
+
     return (\%to_pass, $filehandle);    
 }
 
