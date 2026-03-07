@@ -88,43 +88,43 @@ sub new{
     my $class = ref($that) || $that;
     
     my %valid_parameter_list = (
-				'default_user' => 1,
-				'default_pass' => 1,
-				'default_realm' => 1,
-				'credentials' => 1,
-				'allowed_webservices' => 1,
-				'allowed_webservice_urns' => 1,
-				'service_cache_file' => 1,
-				'debug' => 1,
-				'callback' => 1,
-				'output_formatter' => 1,
-				'description' => 1,
-				'name' => 1,
-				'cookie_prefix' => 1,
-                'expires' => 1,
-                'config_file' => 1,
+                'default_user'                 => 1,
+                'default_pass'                 => 1,
+                'default_realm'                => 1,
+                'credentials'                  => 1,
+                'allowed_webservices'          => 1,
+                'allowed_webservice_urns'      => 1,
+                'service_cache_file'           => 1,
+                'debug'                        => 1,
+                'callback'                     => 1,
+                'output_formatter'             => 1,
+                'description'                  => 1,
+                'name'                         => 1,
+                'cookie_prefix'                => 1,
+                'expires'                      => 1,
+                'config_file'                  => 1,
                 'enable_pattern_introspection' => 1
-				);
-			
+                );
+            
     #--- overide the defaults
     my %args = (
-		name                => 'remote_method',
-		description         => 'Proxies the request method name over to the request destination with the given parameters.', 
-		output_formatter    => sub { my $response = shift; return $response; },
-		callback	    => \&remote_callback,
-                expires             => '-1d',
-		debug               => 0,
-		default_user        => undef,
-		default_pass        => undef,
-		default_realm       => undef,
-		credentials         => {},
-		allowed_webservices => undef,
-		allowed_webservice_urns => undef,
-		cookie_prefix       => '/tmp/',
-        config_file => '/etc/grnoc/webservice/config.xml',
+        name                         => 'remote_method',
+        description                  => 'Proxies the request method name over to the request destination with the given parameters.', 
+        output_formatter             => sub { my $response = shift; return $response; },
+        callback                     => \&remote_callback,
+        expires                      => '-1d',
+        debug                        => 0,
+        default_user                 => undef,
+        default_pass                 => undef,
+        default_realm                => undef,
+        credentials                  => {},
+        allowed_webservices          => undef,
+        allowed_webservice_urns      => undef,
+        cookie_prefix                => '/tmp/',
+        config_file                  => '/etc/grnoc/webservice/config.xml',
         enable_pattern_introspection => 1,
-		@_
-		);
+        @_
+        );
 
     my $self = \%args;
 
@@ -143,41 +143,41 @@ sub new{
     
     # only valid parameters
     foreach my $passed_param (keys %$self) {
-	if (!(exists $valid_parameter_list{$passed_param})) {
-	    Carp::confess("invalid parameter [$passed_param]");
-	      return;
-	  }
+        if (!(exists $valid_parameter_list{$passed_param})) {
+            Carp::confess("invalid parameter [$passed_param]");
+            return;
+        }
     }
 
     if (! defined $self->{'default_user'} || ! defined $self->{'default_pass'}){
-	Carp::confess("remote method needs a default user and password");
-	return;
+        Carp::confess("remote method needs a default user and password");
+        return;
     }
     
     if(!defined $self->{'allowed_webservices'} && !defined($self->{'allowed_webservice_urns'})){
-	Carp::confess("remote method needs a list of allowed webservices and/or URNs to contact");
-	return;
+        Carp::confess("remote method needs a list of allowed webservices and/or URNs to contact");
+        return;
     }
     
     if(!defined($self->{'service_cache_file'}) && !defined($self->{'name_services'})){
-	$self->{'service_cache_file'} = '/etc/grnoc/proxy/name_service.xml';
+        $self->{'service_cache_file'} = '/etc/grnoc/proxy/name_service.xml';
     }
 
     if(!defined($self->{'cookie_prefix'})){
         $self->{'cookie_prefix'} = '/tmp/';
     }
     
-    $self->{'client'} =  GRNOC::WebService::Client->new(
-							uid                 => $self->{'default_user'},
-							passwd              => $self->{'default_pass'},
-							realm               => $self->{'default_realm'},
-							use_keep_alive      => 1,
-							service_cache_file  => $self->{'service_cache_file'},
-							name_services       => $self->{'name_services'},
-							raw_output          => 1,
-							usePost             => 0,
-							debug               => 0
-							);
+    $self->{'client'} = GRNOC::WebService::Client->new(
+                            uid                 => $self->{'default_user'},
+                            passwd              => $self->{'default_pass'},
+                            realm               => $self->{'default_realm'},
+                            use_keep_alive      => 1,
+                            service_cache_file  => $self->{'service_cache_file'},
+                            name_services       => $self->{'name_services'},
+                            raw_output          => 1,
+                            usePost             => 0,
+                            debug               => 0
+                            );
     
     #--- our last read config time is now
     $self->{'config_mtime'} = time;
@@ -198,9 +198,9 @@ sub _return_error {
     warn $self->get_error();
 
     print $fh $cgi->header(-type    => 'text/plain', 
-			   -expires => '-1d',
-			   -status  => $status
-	                  ); 
+                           -expires => '-1d',
+                           -status  => $status
+                           ); 
 }
 
 =head2 remote_urn_lookup
@@ -229,20 +229,20 @@ sub remote_urn_lookup {
     my $is_allowed = 0;
 
     foreach my $allowed_urn (@{$method_ref->{'allowed_webservice_urns'}}){
-	if ($allowed_urn eq $urn){
-	    $is_allowed = 1;
-	    last;
-	}
+        if ($allowed_urn eq $urn){
+            $is_allowed = 1;
+            last;
+        }
     }
 
     if(!$is_allowed){
-	$method_ref->set_error("No URLs found that remote method is set up to talk to for $urn");
-	return undef;
+        $method_ref->set_error("No URLs found that remote method is set up to talk to for $urn");
+        return undef;
     }
 
     if (! $remote_svc->set_service_identifier($urn) ){
-	$method_ref->set_error($remote_svc->get_error());
-	return undef;
+        $method_ref->set_error($remote_svc->get_error());
+        return undef;
     }
 
     my $weighted_urls = $remote_svc->{'urls'};
@@ -250,9 +250,9 @@ sub remote_urn_lookup {
     my @urls;
 
     foreach my $weight (sort keys %$weighted_urls){
-	foreach my $url (@{$weighted_urls->{$weight}}){
-	    push(@urls, {"url" => $url, "weight" => $weight});
-	}
+        foreach my $url (@{$weighted_urls->{$weight}}){
+            push(@urls, {"url" => $url, "weight" => $weight});
+        }
     }
 
     return {'results' => \@urls};
@@ -283,8 +283,8 @@ sub remote_urn_callback{
 
     #--- This should never be true, we make the client at constructor time. This is just a safety
     if (!$remote_svc){
-	$method_ref->set_error("Unable to make remote webservice client");
-	return undef;
+        $method_ref->set_error("Unable to make remote webservice client");
+        return undef;
     }
 
     #--- Set our timeout value either to the default or whatever was passed in
@@ -292,9 +292,9 @@ sub remote_urn_callback{
 
     #--- Set up POST or GET
     if(defined $ENV{'REQUEST_METHOD'} && $ENV{'REQUEST_METHOD'} eq 'POST'){
-	$remote_svc->{'usePost'} = 1;
+        $remote_svc->{'usePost'} = 1;
     }else{
-	$remote_svc->{'usePost'} = 0;
+        $remote_svc->{'usePost'} = 0;
     }   
 
     #--- reload our configuration file if we need to
@@ -309,21 +309,21 @@ sub remote_urn_callback{
     my $is_allowed = 0;
 
     foreach my $allowed_urn (@{$method_ref->{'allowed_webservice_urns'}}){
-	if ($allowed_urn eq $urn){
-	    $is_allowed = 1;
-	    last;
-	}
+        if ($allowed_urn eq $urn){
+            $is_allowed = 1;
+            last;
+        }
     }
 
     if(!$is_allowed){
-	$method_ref->set_error("No URLs found that remote method is set up to talk to for $urn");
-	return undef;
+        $method_ref->set_error("No URLs found that remote method is set up to talk to for $urn");
+        return undef;
     }
 
     #--- if there was some trouble, likely in looking up the service identifier, bubble it up and bail
     if (! $remote_svc->set_service_identifier($urn) ){
-	$method_ref->set_error($remote_svc->get_error());
-	return undef;
+        $method_ref->set_error($remote_svc->get_error());
+        return undef;
     }
 
     #--- load up our cookies
@@ -353,7 +353,7 @@ sub remote_urn_callback{
     }
     #--- bubble an error back up from LWP
     else {
-	$method_ref->set_error($remote_svc->get_error());
+        $method_ref->set_error($remote_svc->get_error());
     }   
 
     return $response;     
@@ -382,23 +382,23 @@ sub remote_callback{
     my $is_valid = 0;
     
     foreach (@{$method_ref->{'allowed_webservices'}}){
-	if ($_ eq $remote_service){
-	    $is_valid = 1;
-	    last;
-	}
+        if ($_ eq $remote_service){
+            $is_valid = 1;
+            last;
+        }
     }
 
     if (!$is_valid){
-	$method_ref->set_error("remote method not set up to talk to $remote_service");
-	return undef;
+        $method_ref->set_error("remote method not set up to talk to $remote_service");
+        return undef;
     }
 
     my $remote_svc = $method_ref->{'client'};
 
     #--- This should never be true, we make the client at constructor time. This is just a safety
     if (!$remote_svc){
-	$method_ref->set_error("Unable to make remote webservice client");
-	return undef;
+        $method_ref->set_error("Unable to make remote webservice client");
+        return undef;
     }  
 
     #--- Set our timeout value either to the default or whatever was passed in
@@ -406,9 +406,9 @@ sub remote_callback{
 
     #--- Set up POST or GET
     if(defined $ENV{'REQUEST_METHOD'} && $ENV{'REQUEST_METHOD'} eq 'POST'){
-	$remote_svc->{'usePost'} = 1;
+        $remote_svc->{'usePost'} = 1;
     }else{
-	$remote_svc->{'usePost'} = 0;
+        $remote_svc->{'usePost'} = 0;
     }
 
     #--- clear out any urls from a past time (ie under mod_perl)
@@ -444,7 +444,7 @@ sub remote_callback{
     }
     #--- bubble an error back up from LWP
     else {
-	$method_ref->set_error($remote_svc->get_error());
+        $method_ref->set_error($remote_svc->get_error());
     }
 
     return $response;   
@@ -467,29 +467,29 @@ sub _parse_remote_parameters{
     my (%to_pass, $filehandle);
 
     if ($remote_params){
-	# split up the params string based on ampersands
-	my @params = split(/[&;]/, $remote_params);
+        # split up the params string based on ampersands
+        my @params = split(/[&;]/, $remote_params);
     
-	foreach my $param_pair (@params){
-	    my ($name, $value) = split(/=/, $param_pair);	
+        foreach my $param_pair (@params){
+            my ($name, $value) = split(/=/, $param_pair);    
 
-	    $name = "" if ( !defined( $name ) );
+            $name = "" if ( !defined( $name ) );
 
-	    # perl's CGI module (used in webservice client) is going to escape values,
-	    # so unescape anything we were sent here to avoid double encoding issues
+            # perl's CGI module (used in webservice client) is going to escape values,
+            # so unescape anything we were sent here to avoid double encoding issues
 
-	    $name  =URI::Escape::uri_unescape( $name );
-	    $value= URI::Escape::uri_unescape($value );
+            $name  =URI::Escape::uri_unescape( $name );
+            $value= URI::Escape::uri_unescape($value );
 
-	    if (exists $to_pass{$name}){
-		push @{$to_pass{$name}}, $value;
-	    }
-	    else{
-		my @array;
-		push(@array,$value);
-		$to_pass{$name} = \@array;
-	    }	
-	}
+            if (exists $to_pass{$name}){
+                push @{$to_pass{$name}}, $value;
+            }
+            else{
+                my @array;
+                push(@array,$value);
+                $to_pass{$name} = \@array;
+            }    
+        }
     }
 
     #--- if we have an attachment specified, go ahead and read it in
@@ -563,26 +563,26 @@ sub _update_cache_file{
     # if we didn't have a service cache file for some reason (error, using name service, etc),
     # just return since there's nothing to do
     if (! $client->{'service_cache_file'}){
-	return;
+        return;
     }
 
     my $cache_filename = $client->{'service_cache_file'};
 
     # file doesn't exist? This is probably bad
     if (! -e $cache_filename){
-	warn "Cache file \"$cache_filename\" does not exist?";
-	return;
+        warn "Cache file \"$cache_filename\" does not exist?";
+        return;
     }
 
     my ($dev, $ino, $mode, $nlink, $uid, $gid, $rdev, $size,
-	$atime, $mtime, $ctime, $blksize, $blocks) = stat($cache_filename);
+    $atime, $mtime, $ctime, $blksize, $blocks) = stat($cache_filename);
 
     my $last_update_time = $method_ref->{'config_mtime'};
 
     # if the current modify time is newer than our last mtime, reload
     if ($mtime > $last_update_time){
-	$client->_load_config();
-	$method_ref->{'config_mtime'} = $mtime;
+        $client->_load_config();
+        $method_ref->{'config_mtime'} = $mtime;
     } 
 
 }
@@ -606,17 +606,17 @@ sub _load_credentials {
     my $realm    = $method->{'default_realm'};
 
     if (exists $credentials->{$key}){
-	my $data = $credentials->{$key};
+        my $data = $credentials->{$key};
 
-	$username = $data->{'username'} if ($data->{'username'});
-	$password = $data->{'password'} if ($data->{'password'});
-	$realm    = $data->{'realm'}    if ($data->{'realm'});
+        $username = $data->{'username'} if ($data->{'username'});
+        $password = $data->{'password'} if ($data->{'password'});
+        $realm    = $data->{'realm'}    if ($data->{'realm'});
     }
 
     $client->set_credentials(uid    => $username,
-			     passwd => $password,
-			     realm  => $realm
-			     );
+                             passwd => $password,
+                             realm  => $realm
+                             );
 
 }
 
