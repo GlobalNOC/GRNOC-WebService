@@ -1,7 +1,12 @@
 GRNOC::WebService v1.2.17 -- Thu Feb 12 2026
 ============================================
 
-* SCTASK1001695 $cgi->param($param); is now $cgi->multi_param($param);. This resolves the error message: 'CGI::param called in list context from .../GRNOC/WebService/Method.pm line 625, this can lead to vulnerabilities. See the warning in "Fetching the value or values of a single named parameter". .../vendor_perl/CGI.pm line 412.'
+Features:
+* SCTASK0928349 `GRNOC::WebService::RemoteMethod` now passes `PROXY_identity_provider` to the remote method being called.
+
+Improvements:
+* SCTASK1001695 Changed `$cgi->param($param)` to `$cgi->multi_param($param)`
+  * This resolves the error message: 'CGI::param called in list context from .../GRNOC/WebService/Method.pm line 625, this can lead to vulnerabilities. See the warning in "Fetching the value or values of a single named parameter". .../vendor_perl/CGI.pm line 412.'
 
 GRNOC::WebService v1.2.16 -- Wed Jan 28 2026
 ============================================
