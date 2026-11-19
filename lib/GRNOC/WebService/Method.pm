@@ -735,16 +735,20 @@ sub _parse_input_parameters {
             }
           }
 
-          if ($multipart) {
-            my $upload_data = $cgi->uploadInfo($input);
-            if ($upload_data) {
-              my $disposition = $upload_data->{'Content-Disposition'};
-              $mime_type = $upload_data->{'Content-Type'};
+          if ( $multipart && $attachment ) {
+            my $fh = $cgi->upload($param);
+            if ($fh) {
+              my $upload_data = $cgi->uploadInfo($fh);
+              if ($upload_data) {
+                my $disposition = $upload_data->{'Content-Disposition'};
+                $mime_type = $upload_data->{'Content-Type'};
 
-              $disposition =~ /filename\=\"(.*)\"/;
-              $filename = $1;
+                if ( defined $disposition && $disposition =~ /filename\=\"(.*)\"/ ) {
+                  $filename = $1;
+                }
 
-              $input_value = $input;
+                $input_value = $fh;
+              }
             }
           }
 
