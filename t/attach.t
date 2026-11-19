@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 use Test::More tests => 19;
+use Term::ANSIColor;
 use strict;
 use GRNOC::WebService;
 use Data::Dumper;
@@ -20,7 +21,10 @@ my $res = $ua->request(POST 'http://localhost:8529/test-attach.cgi',
     ],
 );
 
-ok($res->is_success, 'form data was posted to the web service');
+if(!ok($res->is_success, 'form data was posted to the web service')){
+
+    diag(colored('Response: '.Dumper($res), 'red'));
+}
 
 my $ws_data = from_json($res->content);
 my $filename = $ws_data->{'results'}{'filename'};

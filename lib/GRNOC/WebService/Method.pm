@@ -622,7 +622,13 @@ sub _parse_input_parameters {
       $multipart = 1;
     }
 
-    my @input_array = $cgi->multi_param($param);
+    my @input_array;
+    if ( $attachment ) {
+      @input_array = $cgi->upload($param);
+    }
+    else {
+      @input_array = $cgi->multi_param($param);
+    }
 
     my $input_cnt = scalar @input_array;
 
@@ -735,20 +741,16 @@ sub _parse_input_parameters {
             }
           }
 
-          if ( $multipart && $attachment ) {
-            my $fh = $cgi->upload($param);
-            if ($fh) {
-              my $upload_data = $cgi->uploadInfo($fh);
-              if ($upload_data) {
-                my $disposition = $upload_data->{'Content-Disposition'};
-                $mime_type = $upload_data->{'Content-Type'};
+          if ( $multipart && ref($input) ) {
+            my $upload_data = $cgi->uploadInfo($input);
+            if ($upload_data) {
+              my $disposition = $upload_data->{'Content-Disposition'};
+              $mime_type = $upload_data->{'Content-Type'};
 
-                if ( defined $disposition && $disposition =~ /filename\=\"(.*)\"/ ) {
-                  $filename = $1;
-                }
+              $disposition =~ /filename\=\"(.*)\"/;
+              $filename = $1;
 
-                $input_value = $fh;
-              }
+              $input_value = $input;
             }
           }
 
